@@ -1,1 +1,7 @@
-cabrera-sandoval-silva-edp
+# Trabajo Práctico - Estrategias de Persistencia
+
+## Integrantes
+
+- Cabrera Tiago
+- Sandoval Lucas
+- Silva Eduardo
