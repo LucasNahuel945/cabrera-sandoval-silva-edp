@@ -2,13 +2,14 @@ var express = require("express");
 var router = express.Router();
 var models = require("../models");
 
-router.get("/", (req, res) => {
+router.get("/", (req, res, next) => {
   models.carrera
     .findAll({
-      attributes: ["id", "nombre"]
+      attributes: ["id", "nombre"],
+      include: [{as: 'materias', model:models.materia, attributes: ["id", "nombre"]}]
     })
     .then(carreras => res.send(carreras))
-    .catch(() => res.sendStatus(500));
+    .catch(error => {return next(error)});
 });
 
 router.post("/", (req, res) => {
@@ -30,6 +31,7 @@ const findCarrera = (id, { onSuccess, onNotFound, onError }) => {
   models.carrera
     .findOne({
       attributes: ["id", "nombre"],
+      include: [{as: 'materias', model:models.materia, attributes: ["id", "nombre"]}],
       where: { id }
     })
     .then(carrera => (carrera ? onSuccess(carrera) : onNotFound()))
