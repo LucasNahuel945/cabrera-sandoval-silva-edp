@@ -2,13 +2,14 @@ const express = require("express");
 const router = express.Router();
 const models = require("../models");
 
-router.get("/", (req, res) => {
+router.get("/", (req, res, next) => {
   models.materia
     .findAll({
-      attributes: ["id", "nombre", "id_carrera"]
+      attributes: ["id", "nombre"],
+      include: [{as: 'carrera_relacionada', model:models.carrera, attributes: ["id", "nombre"]}]
     })
     .then(materias => res.send(materias))
-    .catch(() => res.sendStatus(500));
+    .catch(error => {return next(error)});
 });
 
 router.post("/", (req, res) => {
