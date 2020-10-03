@@ -3,18 +3,17 @@ const router = express.Router();
 const models = require("../models");
 
 router.get("/", (req, res, next) => {
-  models.carrera
+  models.Carrera
     .findAll({
-      attributes: ["id", "nombre"],
-      include: [{as: 'materias', model:models.materia, attributes: ["id", "nombre"]}]
+      attributes: ["id", "name"]
     })
     .then(carreras => res.send(carreras))
     .catch(error => {return next(error)});
 });
 
 router.post("/", (req, res) => {
-  models.carrera
-    .create({ nombre: req.body.nombre })
+  models.Carrera
+    .create({ nombre: req.body.name })
     .then(carrera => res.status(201).send({ id: carrera.id }))
     .catch(error => {
       if (error == "SequelizeUniqueConstraintError: Validation error") {
@@ -28,10 +27,9 @@ router.post("/", (req, res) => {
 });
 
 const findCarrera = (id, { onSuccess, onNotFound, onError }) => {
-  models.carrera
+  models.Carrera
     .findOne({
-      attributes: ["id", "nombre"],
-      include: [{as: 'materias', model:models.materia, attributes: ["id", "nombre"]}],
+      attributes: ["id", "name"],
       where: { id }
     })
     .then(carrera => (carrera ? onSuccess(carrera) : onNotFound()))
@@ -49,7 +47,7 @@ router.get("/:id", (req, res) => {
 router.put("/:id", (req, res) => {
   const onSuccess = carrera =>
     carrera
-      .update({ nombre: req.body.nombre }, { fields: ["nombre"] })
+      .update({ name: req.body.name }, { fields: ["name"] })
       .then(() => res.sendStatus(200))
       .catch(error => {
         if (error == "SequelizeUniqueConstraintError: Validation error") {

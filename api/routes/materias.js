@@ -3,19 +3,19 @@ const router = express.Router();
 const models = require("../models");
 
 router.get("/", (req, res, next) => {
-  models.materia
+  models.Materia
     .findAll({
-      attributes: ["id", "nombre"],
-      include: [{as: 'carrera_relacionada', model:models.carrera, attributes: ["id", "nombre"]}]
+      attributes: ["id", "name"],
+      include: [{as: 'carrera', model:models.Carrera, attributes: ["id", "name"]}]
     })
     .then(materias => res.send(materias))
     .catch(error => {return next(error)});
 });
 
 router.post("/", (req, res) => {
-  models.materia
-    .create({ nombre: req.body.nombre, 
-              id_carrera: req.body.id_carrera
+  models.Materia
+    .create({ name: req.body.name, 
+              carrera_id: req.body.carrera_id
             })
     .then(materia => res.status(201).send({ id: materia.id }))
     .catch(error => {
@@ -30,10 +30,10 @@ router.post("/", (req, res) => {
 });
 
 const findMateria = (id, { onSuccess, onNotFound, onError }) => {
-  models.materia
+  models.Materia
     .findOne({
-      attributes: ["id", "nombre"],
-      include: [{as: 'carrera_relacionada', model:models.carrera, attributes: ["id", "nombre"]}],
+      attributes: ["id", "name"],
+      include: [{as: 'carrera', model:models.Carrera, attributes: ["id", "name"]}],
       where: { id }
     })
     .then(materia => (materia ? onSuccess(materia) : onNotFound()))
@@ -51,7 +51,7 @@ router.get("/:id", (req, res) => {
 router.put("/:id", (req, res) => {
   const onSuccess = materia =>
   materia
-      .update({ nombre: req.body.nombre, id_carrera: req.body.id_carrera }, { fields: ["nombre", "id_carrera"] })
+      .update({ name: req.body.name, carrera_id: req.body.carrera_id }, { fields: ["name", "carrera_id"] })
       .then(() => res.sendStatus(200))
       .catch(error => {
         if (error == "SequelizeUniqueConstraintError: Validation error") {
