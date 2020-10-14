@@ -11,7 +11,7 @@ module.exports = {
       name: {
         type: Sequelize.STRING
       },
-      carrera_id: {
+      id_carrera: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {

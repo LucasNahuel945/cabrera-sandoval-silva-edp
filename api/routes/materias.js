@@ -15,7 +15,7 @@ router.get("/", (req, res, next) => {
 router.post("/", (req, res) => {
   models.Materia
     .create({ name: req.body.name, 
-              carrera_id: req.body.carrera_id
+              id_carrera: req.body.id_carrera
             })
     .then(materia => res.status(201).send({ id: materia.id }))
     .catch(error => {
@@ -70,13 +70,11 @@ router.put("/:id", (req, res) => {
 });
 
 router.delete("/:id", (req, res) => {
-  const onSuccess = materia =>
-  materia
-      .destroy()
-      .then(() => res.sendStatus(200))
-      .catch(() => res.sendStatus(500));
   findMateria(req.params.id, {
-    onSuccess,
+    onSuccess: materia => 
+      materia.destroy()
+        .then(()=> res.sendStatus(200))
+        .catch(() => res.sendStatus(500)),
     onNotFound: () => res.sendStatus(404),
     onError: () => res.sendStatus(500)
   });
